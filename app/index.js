@@ -1,4 +1,3 @@
-
 import React, {Component, PureComponent} from 'react';
 import ReactDOM from 'react-dom';
 import {withStyles} from '@material-ui/core/styles';
@@ -29,12 +28,12 @@ const styles = theme => ({
     green: {
         color: "green"
     },
-     refresh: {
+    refresh: {
         cursor: "pointer"
-     }
+    }
 });
 class App extends Component {
-    constructor(props){
+    constructor(props) {
         super(props);
         this.state = {
             isFetching: false,
@@ -49,56 +48,58 @@ class App extends Component {
         this.init = this.init.bind(this);
         this.getLocation = (lat, lng) => {
             let state = this.state;
-            let G_URL = "http://maps.googleapis.com/maps/api/geocode/json?latlng="+lat+","+lng+"&sensor=true";
-            const getData = () => {
-                fetch(G_URL)
-                    .then(response => {
-                        if (response.ok) {
-                            return Promise.resolve(response);
-                        }
-                        else {
-                            return Promise.reject(new Error('Failed to load'));
-                        }
-                    })
-                    .then(response => response.json()) // parse response as JSON
-                    .then(data => {
-                        //console.log(data);
-                        if (data && data.results && data.results[2] && data.results[2].address_components) {
-                            state.district = data.results[2].address_components[0].long_name;
-                        }
-                        if (data && data.results && data.results[0] && data.results[0].geometry) {
-                            state.allocation = data.results[0].geometry.location_type;
-                        }
-                        if (data && data.results && data.results[0] && data.results[0].formatted_address) {
-                            let address = data.results[0].formatted_address.split(",");
-                            state.address = address;
-                            state.street = address[1] + "," + address[2];
-                            state.city = address[3] + "," + address[4];
-                            state.index = address[5];
-                            this.setState(state);
-                        }
+            const G_URL = "http://maps.googleapis.com/maps/api/geocode/json?latlng=" + lat + "," + lng + "&sensor=true";
+            fetch(G_URL)
+                .then(response => {
+                    if (response.ok) {
+                        return Promise.resolve(response);
+                    }
+                    else {
+                        return Promise.reject(new Error('Failed to load'));
+                    }
+                })
+                .then(response => response.json()) // parse response as JSON
+                .then(data => {
+                    //console.log(data);
+                    if (data && data.results && data.results[2] && data.results[2].address_components) {
+                        state.district = data.results[2].address_components[0].long_name;
+                    }
+                    if (data && data.results && data.results[0] && data.results[0].geometry) {
+                        state.allocation = data.results[0].geometry.location_type;
+                    }
+                    if (data && data.results && data.results[0] && data.results[0].formatted_address) {
+                        let address = data.results[0].formatted_address.split(",");
+                        state.address = address;
+                        state.street = address[1] + "," + address[2];
+                        state.city = address[3] + "," + address[4];
+                        state.index = address[5];
+                        // if (this.state != state) {
+                            this.setState({...state});
+                        // }
+                    }
 
-                    })
-                    .catch(function(error) {
-                        console.log(`Error: ${error.message}`);
-                    });
-            }
-
+                })
+                .catch(function (error) {
+                    console.log(`Error: ${error.message}`);
+                });
         };
     }
-    // shouldComponentUpdate(nextProps){
-    //     return this.props != nextProps
-    // }
-    componentWillMount(){
+
+    shouldComponentUpdate(nextProps, nextState){
+        return this.state != nextState || this.props != nextProps
+    }
+    componentWillMount() {
 
     }
-    componentDidMount(){
+
+    componentDidMount() {
         this.init();
         // setInterval(() => {
         //     this.init()
         // }, 10000);
     }
-    init(){
+
+    init() {
         let self = this, state = this.state, counter = 10;
         this.setState({
             isFetching: true
@@ -122,20 +123,21 @@ class App extends Component {
             })
             .then(response => response.json()) // parse response as JSON
             .then(data => {
-                return self.setState({...data, isFetching: false}, ()=>{
+                return self.setState({...data, isFetching: false}, () => {
                     this.getLocation(data.lat, data.lng);
                 }, () => {
                     clearInterval(interval);
                 });
             })
-            .catch(function(error) {
+            .catch(function (error) {
                 console.log(`Error: ${error.message}`);
                 setTimeout(() => {
                     self.init();
                 });
             });
     }
-    render(){
+
+    render() {
         const {classes} = this.props;
         let data = {...this.state}, counter = this.state.counter || 0;
         if (data) {
