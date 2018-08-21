@@ -1,4 +1,5 @@
 //noinspection JSUnresolvedVariable
+const WS = require('ws');
 const fs = require('fs');
 const http = require('http');
 const Express = require('express');
@@ -25,6 +26,9 @@ const env = process.env;
 
 const app = new Express();
 const serverPort = 8086;
+const WebSocketServer = require('ws').Server;
+const wss = new WebSocketServer({port: 40510});
+
 
 if (process.env.NODE_ENV !== 'production') {
     app.use(require("webpack-dev-middleware")(compiler, {
@@ -49,7 +53,6 @@ app.use(function (req, res, next) {
     res.header("Access-Control-Allow-Methods", "PUT, GET, POST, DELETE, OPTIONS");
     next();
 });
-
 
 // app root folder path
 const root = path.resolve(__dirname, '..'); // __dirname is a global variable available in any file and refers to that file's directory path
@@ -116,12 +119,13 @@ const handleError = (err) => {
     }
 };
 const getESPData = (callback) => {
+
     const postData = JSON.stringify({
         'msg': 'Hello World!'
     });
 
     const options = {
-        hostname: '192.168.1.10',
+        hostname: '192.168.1.11',
         port: 80,
         path: '/test',
         method: 'GET',
@@ -132,11 +136,21 @@ const getESPData = (callback) => {
     };
 
     const req = http.request(options, (res) => {
+
         console.log(`STATUS: ${res.statusCode}`);
         console.log(`HEADERS: ${JSON.stringify(res.headers)}`);
+
         res.setEncoding('utf8');
+
         res.on('data', (chunk) => {
             console.log(`BODY: ${chunk}`);
+
+            wss.on('connection', (ws) => {
+                ws.on('message', (message) => {
+                    console.log('received: %s', message)
+                });
+                ws.send(chunk);
+            });
             callback(chunk);
         });
         res.on('end', () => {

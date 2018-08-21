@@ -117,7 +117,7 @@ class App extends Component {
         return this.state != nextState || this.props != nextProps
     }
     componentWillMount() {
-        this.startTimers()
+        this.startTimers();
     }
 
     componentDidMount() {
@@ -132,7 +132,18 @@ class App extends Component {
         this.setState({
             isFetching: true
         }, () => {
-
+            let ws = new WebSocket('ws://localhost:40510');
+            // event emmited when connected
+            ws.onopen = function () {
+                console.log('websocket is connected ...')
+                // sending a send event to websocket server
+                ws.send('connected')
+            }
+            // event emmited when receiving message
+            ws.onmessage = function (ev) {
+                console.log(ev);
+            }
+            //TODO: Get rid of fetch
             fetch('/data')
                 .then(response => {
                     if (response.ok) {

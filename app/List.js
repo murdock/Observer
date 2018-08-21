@@ -115,8 +115,8 @@ class FolderList extends Component {
                                 <MyLocation />
                             </Avatar>
                             <ListItemText
-                                primary={ !isFetching ? (street +", "+ allocation) : <CircularProgress  size={20}/>}
-                                secondary={ !isFetching ? (district + ", " + city + "," + index) : <CircularProgress  size={20}/>}
+                                primary={ !isFetching ? ( (street || "*Street") +", "+ (allocation || "*Land") ) : <CircularProgress  size={20}/>}
+                                secondary={ !isFetching ? ( (district || "*Earth") + ", " + (city || "*Void") + ", " + (index || "*666") ) : <CircularProgress  size={20}/>}
                             />
 
                         </ListItem>
@@ -124,7 +124,7 @@ class FolderList extends Component {
                             <Avatar>
                                 <Satellite />
                             </Avatar>
-                            <ListItemText primary={!isFetching ? satellites : <CircularProgress  size={20}/>}
+                            <ListItemText primary={!isFetching ? (satellites || "satellites") : <CircularProgress  size={20}/>}
                                           secondary="Satellites count"/>
                         </ListItem>
                         <ListItem>
