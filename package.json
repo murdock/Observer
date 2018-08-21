@@ -1,15 +1,15 @@
 {
-  "name": "arduinoapi",
+  "name": "MultiSensorAPI",
   "version": "1.0.0",
-  "description": "Arduino API Server",
+  "description": "ESP8266-based device API",
   "main": "server/index.js",
   "scripts": {
     "test": "jest",
-    "start": "nodemon ./ --ignore 'assets/javascripts/**/*' --ignore 'public/javascripts/**/*'"
+    "start": "nodemon ./"
   },
   "repository": {
     "type": "git",
-    "url": "none"
+    "url": "https://github.com/murdock/MultiSensorAPI.git"
   },
   "author": "Dmytro Iuryn",
   "license": "MIT",
