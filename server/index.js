@@ -55,12 +55,13 @@ app.use(function (req, res, next) {
 const root = path.resolve(__dirname, '..'); // __dirname is a global variable available in any file and refers to that file's directory path
 //static folders
 app.use(Express.static(path.join(root, 'public')));
+
 //app.use('/data', Express.static(PATH_DATA));
 app.get('/data', (req, res, next) => {
     getESPData(data => {
         data = JSON.parse(data);
-        fs.writeFileSync(root + "/post.json", JSON.stringify(data));
-        res.json(data)
+        fs.appendFileSync(root + "/post.json", JSON.stringify(data));
+        res.json(data).end();
     });
 });
 app.get('/test', (req, res, next) => {
@@ -120,7 +121,7 @@ const getESPData = (callback) => {
     });
 
     const options = {
-        hostname: '172.16.42.4',
+        hostname: '192.168.1.10',
         port: 80,
         path: '/test',
         method: 'GET',

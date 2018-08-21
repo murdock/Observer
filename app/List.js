@@ -5,7 +5,8 @@ import Paper from '@material-ui/core/Paper';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
-import CircularProgress from "@material-ui/core/CircularProgress"
+import CircularProgress from "@material-ui/core/CircularProgress";
+//import LinearBuffer from '../vendors/LinearBuffer';
 import Avatar from '@material-ui/core/Avatar';
 import {
     AcUnit, Opacity, LocationOn, LocalFlorist, Satellite, Toys, DirectionsCar, MyLocation, GolfCourse
@@ -74,17 +75,10 @@ class FolderList extends Component {
             district,
             allocation} = this.props.data || {};
 
-        const {classes} = this.props;
-        let coords = {lat: lat, long: lng};
-        //console.log("[LIST]: props", this.props.data);
+        const {classes, isFetching} = this.props;
+
         return (
             <Paper className={classes.root}>
-                {
-                    !this.props.data
-                    &&
-                    <CircularProgress/>
-
-                }
                 {
                     this.props.data
                     &&
@@ -93,29 +87,36 @@ class FolderList extends Component {
                             <Avatar>
                                 <AcUnit />
                             </Avatar>
-                            <ListItemText primary={temperature ? <span className={temperature >= 30 ? classes.red : classes.green}>{temperature}°C {temperature < 0 ? '-' : '+'}</span> : 0}
+                            <ListItemText primary={temperature ? <span className={temperature >= 30 ? classes.red : classes.green}>{!isFetching ? temperature : <CircularProgress  size={20}/>}°C {temperature < 0 ? '-' : '+'}</span> : <CircularProgress  size={20}/>}
                                           secondary="Temperature"/>
+
                         </ListItem>
                         <ListItem>
                             <Avatar>
                                 <Opacity />
                             </Avatar>
-                            <ListItemText primary={humidity ? <span className={humidity < 40 || humidity > 80 ? classes.red : classes.green}>{humidity}%</span> : 0} secondary="Humidity"/>
+                            <ListItemText primary={
+                                humidity ? <span className={humidity < 40 || humidity > 80 ? classes.red : classes.green}>
+                                        {!isFetching ? humidity : <CircularProgress  size={20}/>}%
+                                        </span> : <CircularProgress  size={20}/>} secondary="Humidity"/>
                         </ListItem>
                         <ListItem>
                             <Avatar>
                                 <LocalFlorist />
                             </Avatar>
-                            <ListItemText primary={airQuality ? <span className={airQuality >= 1000 ? classes.red : classes.green}>{airQuality}</span> : 0}
-                                          secondary="CO&#x2082; (ppm or mg/l)"/>
+                            <ListItemText primary={
+                                airQuality ? <span className={airQuality >= 1000 ? classes.red : classes.green}>
+                                        {!isFetching ? airQuality : <CircularProgress  size={20}/>}
+                                        </span> : <CircularProgress  size={20}/>}
+                                        secondary="CO&#x2082; (ppm or mg/l)"/>
                         </ListItem>
                         <ListItem>
                             <Avatar>
                                 <MyLocation />
                             </Avatar>
                             <ListItemText
-                                primary={ (street +", "+ allocation) || "No data"}
-                                secondary={ (district + ", " + city + "," + index) || "No data"}
+                                primary={ !isFetching ? (street +", "+ allocation) : <CircularProgress  size={20}/>}
+                                secondary={ !isFetching ? (district + ", " + city + "," + index) : <CircularProgress  size={20}/>}
                             />
 
                         </ListItem>
@@ -123,21 +124,21 @@ class FolderList extends Component {
                             <Avatar>
                                 <Satellite />
                             </Avatar>
-                            <ListItemText primary={satellites ? satellites : 0}
+                            <ListItemText primary={!isFetching ? satellites : <CircularProgress  size={20}/>}
                                           secondary="Satellites count"/>
                         </ListItem>
                         <ListItem>
                             <Avatar>
                                 <GolfCourse />
                             </Avatar>
-                            <ListItemText primary={altitudeFeet ? toMeters(altitudeFeet) + " m" : 0}
+                            <ListItemText primary={!isFetching ? (altitudeFeet ? toMeters(altitudeFeet) + " m" : 0) : <CircularProgress  size={20}/>}
                                           secondary="Altitude/Meters"/>
                         </ListItem>
                         <ListItem>
                             <Avatar>
                                 <DirectionsCar />
                             </Avatar>
-                            <ListItemText primary={speedMPH ? milesToKm(speedMPH) : 0}
+                            <ListItemText primary={!isFetching ? (speedMPH ? milesToKm(speedMPH) : 0) : <CircularProgress  size={20}/>}
                                           secondary="Speed / KmH"/>
                         </ListItem>
                     </List>
