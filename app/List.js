@@ -16,7 +16,7 @@ const toMeters = (str) => {
     return Math.floor(str * 0.3048);
 };
 const milesToKm = (str) => {
-    return Math.round(str * 1.609344);
+    return Math.floor(str * 1.609344);
 };
 
 const styles = theme => ({
@@ -42,24 +42,14 @@ class FolderList extends Component {
         };
     }
 
-    componentWillMount() {
-
-    };
-    componentDidMount() {
-        //console.log("componentDidMount", this.state);
+    shouldComponentUpdate(nextProps, nextState) {
+        //console.log(nextProps);
+        return this.props.data !== nextProps.data
     }
-
+    componentDidUpdate(){
+        //console.log("LIST DID UPDATE", this.props);
+    }
     render() {
-        let __data = {
-            airQuality: "102",
-            altitudeFeet: "445.8661",
-            humidity: "47",
-            lat: "50.39246",
-            lng: "30.63237",
-            satellites: "12",
-            speedMPH: "0.057539",
-            temperature: "25"
-        };
         let self = this, {
             temperature,
             humidity,
@@ -73,7 +63,7 @@ class FolderList extends Component {
             street,
             index,
             district,
-            allocation} = this.props.data || {};
+            allocation} = this.props.data;
 
         const {classes, isFetching} = this.props;
 
@@ -115,8 +105,8 @@ class FolderList extends Component {
                                 <MyLocation />
                             </Avatar>
                             <ListItemText
-                                primary={ !isFetching ? ( (street || "*Street") +", "+ (allocation || "*Land") ) : <CircularProgress  size={20}/>}
-                                secondary={ !isFetching ? ( (district || "*Earth") + ", " + (city || "*Void") + ", " + (index || "*666") ) : <CircularProgress  size={20}/>}
+                                primary={ !isFetching && street && allocation ? ( street + ", " + allocation ) : <CircularProgress  size={20}/>}
+                                secondary={ !isFetching && district && city && index ? ( district + ", " + city + ", " + index ) : <CircularProgress  size={20}/>}
                             />
 
                         </ListItem>
@@ -124,22 +114,22 @@ class FolderList extends Component {
                             <Avatar>
                                 <Satellite />
                             </Avatar>
-                            <ListItemText primary={!isFetching ? (satellites || "satellites") : <CircularProgress  size={20}/>}
+                            <ListItemText primary={!isFetching && satellites ? satellites : <CircularProgress  size={20}/>}
                                           secondary="Satellites count"/>
                         </ListItem>
                         <ListItem>
                             <Avatar>
                                 <GolfCourse />
                             </Avatar>
-                            <ListItemText primary={!isFetching ? (altitudeFeet ? toMeters(altitudeFeet) + " m" : 0) : <CircularProgress  size={20}/>}
+                            <ListItemText primary={!isFetching && altitudeFeet ? (altitudeFeet && toMeters(altitudeFeet) + " m") : <CircularProgress  size={20}/>}
                                           secondary="Altitude/Meters"/>
                         </ListItem>
                         <ListItem>
                             <Avatar>
                                 <DirectionsCar />
                             </Avatar>
-                            <ListItemText primary={!isFetching ? (speedMPH ? milesToKm(speedMPH) : 0) : <CircularProgress  size={20}/>}
-                                          secondary="Speed / KmH"/>
+                            <ListItemText primary={!isFetching && speedMPH ? (speedMPH && milesToKm(speedMPH) * 1000) : <CircularProgress  size={20}/>}
+                                          secondary="Speed / Meters per hour"/>
                         </ListItem>
                     </List>
                 }

@@ -5,7 +5,7 @@
   "main": "server/index.js",
   "scripts": {
     "test": "jest",
-    "start": "nodemon ./ --ignore 'post.json' --ignore 'log/*' --ignore 'public/*'"
+    "start": "nodemon ./ --ignore 'post.json' --ignore 'post_WS.json' --ignore 'log/*' --ignore 'public/*'"
   },
   "repository": {
     "type": "git",
@@ -14,6 +14,7 @@
   "author": "Dmytro Iuryn",
   "license": "MIT",
   "dependencies": {
+    "@babel/runtime": "7.0.0-beta.55",
     "@devexpress/dx-react-core": "1.4.0",
     "@devexpress/dx-react-grid": "1.4.0",
     "@devexpress/dx-react-grid-material-ui": "1.4.0",
@@ -26,7 +27,6 @@
     "autosuggest-highlight": "3.1.1",
     "babel-plugin-syntax-dynamic-import": "6.18.0",
     "babel-polyfill": "6.26.0",
-    "babel-runtime": "6.26.0",
     "babelify": "8.0.0",
     "bluebird": "3.5.1",
     "body-parser": "1.18.3",
@@ -119,10 +119,11 @@
     "tcp-port-used": "0.1.2",
     "topojson-client": "3.0.0",
     "topojson-simplify": "3.0.2",
+    "useragent": "^2.3.0",
     "webpack": "3.11.0",
-    "websocket": "1.0.24",
     "whatwg-fetch": "0.11.0",
-    "ws": "5.2.0"
+    "react-websocket": "^2.0.0",
+    "ws": "6.0.0"
   },
   "devDependencies": {
     "babel-cli": "6.26.0",
