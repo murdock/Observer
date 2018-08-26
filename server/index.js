@@ -60,7 +60,7 @@ app.use(function (req, res, next) {
 // app root folder path
 const root = path.resolve(__dirname, '..'); // __dirname is a global variable available in any file and refers to that file's directory path
 //static folders
-app.use(express.static(path.join(root, 'public')));
+app.use('/public',express.static(path.join(root, 'public')));
 
 app.use('/data', express.static(PATH_DATA));
 
@@ -89,22 +89,24 @@ app.get('*', (req, res, next) => {
 wss.on('connection', (ws) => {
 
     ws.on('message', (message) => {
+        const LOG_URI = path.resolve(__dirname + "/log/", "logWS.json");
         const data = message;
         console.log("%received: ", data);
         try {
-            if (JSON.parse(data).temperature) {
+            if (JSON.parse(data).sensor) {
                 ws.send(JSON.stringify({
                     data: data
                 }));
+
+                broadcast({
+                    data: data
+                }, ws);
+
+                fs.appendFileSync(LOG_URI, data);
             }
         } catch (e) {
             console.log("Error on parse JSON: ", e);
         }
-
-
-        broadcast({
-            data: data
-        }, ws);
     });
 
     ws.on('close', () => {
@@ -135,61 +137,3 @@ const handleError = (err) => {
             process.exit(1);
     }
 };
-// const getESPData = (callback) => {
-//
-//     const postData = JSON.stringify({
-//         'msg': 'Hello World!'
-//     });
-//
-//     const options = {
-//         hostname: '192.168.1.11',
-//         port: 80,
-//         path: '/test',
-//         method: 'GET',
-//         headers: {
-//             'Content-Type': 'application/x-www-form-urlencoded',
-//             'Content-Length': postData.length
-//         }
-//     };
-//     wss.on('connection', (ws) => {
-//         ws.on('message', (message) => {
-//             console.log('received: %s', message);
-//             ws.send(message);
-//             callback(message);
-//         });
-//         //ws.send(chunk);
-//     });
-//     const req = http.request(options, (res) => {
-//
-//         console.log(`STATUS: ${res.statusCode}`);
-//         console.log(`HEADERS: ${JSON.stringify(res.headers)}`);
-//
-//         res.setEncoding('utf8');
-//
-//         res.on('data', (chunk) => {
-//             console.log(`BODY: ${chunk}`);
-//
-//             wss.on('connection', (ws) => {
-//                 ws.on('message', (message) => {
-//                     console.log('received: %s', message)
-//                 });
-//                 //ws.send(chunk);
-//             });
-//             callback(chunk);
-//         });
-//         res.on('end', () => {
-//             console.log('No more data in response.');
-//         });
-//     });
-//
-//     req.on('error', (e) => {
-//         console.error(`problem with request: ${e.message}`);
-//     });
-//
-// // write data to request body
-//     req.write(postData);
-//     req.end();
-//};
-
-
-

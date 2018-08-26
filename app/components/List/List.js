@@ -41,13 +41,11 @@ class FolderList extends Component {
             location: location || null
         };
     }
-
-    shouldComponentUpdate(nextProps, nextState) {
-        //console.log(nextProps);
-        return this.props.data !== nextProps.data
+    componentDidMount(){
+        console.log("LIST DID MOUNT", this.props.data);
     }
     componentDidUpdate(){
-        //console.log("LIST DID UPDATE", this.props);
+        console.log("LIST DID UPDATE", this.props.data);
     }
     render() {
         let self = this, {
@@ -69,6 +67,11 @@ class FolderList extends Component {
 
         return (
             <Paper className={classes.root}>
+                <div className={classes.rawData}>
+                    {
+                        JSON.stringify(this.props.data)
+                    }
+                </div>
                 {
                     this.props.data
                     &&
@@ -78,7 +81,7 @@ class FolderList extends Component {
                                 <AcUnit />
                             </Avatar>
                             <ListItemText primary={temperature ? <span className={temperature >= 30 ? classes.red : classes.green}>{!isFetching ? temperature : <CircularProgress  size={20}/>}°C {temperature < 0 ? '-' : '+'}</span> : <CircularProgress  size={20}/>}
-                                          secondary="Temperature"/>
+                                          /*secondary="Temperature"*//>
 
                         </ListItem>
                         <ListItem>
@@ -98,15 +101,15 @@ class FolderList extends Component {
                                 airQuality ? <span className={airQuality >= 1000 ? classes.red : classes.green}>
                                         {!isFetching ? airQuality : <CircularProgress  size={20}/>}
                                         </span> : <CircularProgress  size={20}/>}
-                                        secondary="CO&#x2082; (ppm or mg/l)"/>
+                                        secondary="CO&#x2082; (ppm or mg/l)" />
                         </ListItem>
                         <ListItem>
                             <Avatar>
                                 <MyLocation />
                             </Avatar>
                             <ListItemText
-                                primary={ !isFetching && street && allocation ? ( street + ", " + allocation ) : <CircularProgress  size={20}/>}
-                                secondary={ !isFetching && district && city && index ? ( district + ", " + city + ", " + index ) : <CircularProgress  size={20}/>}
+                                primary={ !isFetching && street && allocation ? ( street + ", " + allocation ) : "No data"}
+                                secondary={ !isFetching && district && city && index ? ( district + ", " + city + ", " + index ) : "No data"}
                             />
 
                         </ListItem>

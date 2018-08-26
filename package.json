@@ -5,7 +5,8 @@
   "main": "server/index.js",
   "scripts": {
     "test": "jest",
-    "start": "nodemon ./ --ignore 'post.json' --ignore 'post_WS.json' --ignore 'log/*' --ignore 'public/*'"
+    "start": "nodemon ./ --ignore 'post.json' --ignore 'post_WS.json' --ignore 'log/*' --ignore 'public/*'",
+    "build": "webpack --config webpack.config.prod.js"
   },
   "repository": {
     "type": "git",

@@ -1,10 +1,7 @@
-// const HtmlWebpackPlugin = require('html-webpack-plugin');
 const webpack = require('webpack');
 const { resolve } = require('path');
 const hmr = [
     'babel-polyfill',
-    // 'webpack-hot-middleware/client?path=/__webpack_hmr',
-    // 'react-hot-loader/babel'
 ];
 module.exports = {
     devtool: 'source-map',
@@ -83,20 +80,15 @@ module.exports = {
         extensions: [" ",".js", ".jsx", ".css", ".less", ".json"],
     },
     plugins: [
-        // // new HtmlWebpackPlugin({
-        // //     title: '[DEV]: Kaleidoscope - Dish Technologies',
-        // //     inject: true,
-        // //     filename: resolve(__dirname, 'public/index.html'),
-        // //     template: resolve(__dirname, 'public/index-tpl.html')
-        // // }),
-        // new webpack.NamedModulesPlugin(),
-        // new webpack.HotModuleReplacementPlugin(),
-        // new webpack.ProvidePlugin({
-        //     'fetch': 'imports-loader?this=>global!exports-loader?global.fetch!whatwg-fetch'
-        // }),
+        new webpack.NamedModulesPlugin(),
+        new webpack.HotModuleReplacementPlugin(),
+        new webpack.ProvidePlugin({
+            'fetch': 'imports-loader?this=>global!exports-loader?global.fetch!whatwg-fetch'
+        }),
         new webpack.DefinePlugin({
             'process.env': {
                 'NODE_ENV': JSON.stringify('development'),
+                'PUBLIC_URL': JSON.stringify('http://localhost:8086/public')
             }
         })
     ]
