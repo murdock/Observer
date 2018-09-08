@@ -1,10 +1,8 @@
 import React, {Component, PureComponent} from 'react';
 import ReactDOM from 'react-dom';
 import {withStyles} from '@material-ui/core/styles';
-import Switch from '@material-ui/core/Switch';
 import FolderList from '../List/List';
 import Moment from 'moment';
-import setupSocket from "../../utilities/SetupSocket";
 import LinearProgress from "@material-ui/core/LinearProgress";
 
 const getClock = () => {
@@ -55,7 +53,7 @@ const styles = theme => ({
         backgroundColor: "lightgray"
     }
 });
-
+const URL = "http://multisensor.local/getData";
 class App extends Component {
     constructor(props) {
         super(props);
@@ -64,6 +62,7 @@ class App extends Component {
         this.connectionTimer = null;
         this.counter = 0;
         this.counterInterval = null;
+
         this.state = {
             offline: false,
             data: {
@@ -87,37 +86,38 @@ class App extends Component {
             isFetching: false,
             counter: 0
         };
-        this.socket = setupSocket(this.dispatch, navigator.userAgent);
+
         this.init = this.init.bind(this);
         this.handleSwitchChange = this.handleSwitchChange.bind(this);
         this.startTimers = this.startTimers.bind(this);
     }
 
-    dispatch = (data) => {
-        let state = this.state;
-        if (this.connectionTimer) {
-            clearTimeout(this.connectionTimer);
-        }
-        try {
-            let parsed = JSON.parse(data);
-
-            if (parsed && parsed.data && parsed.data.length) {
-                let jsonData = parsed.data;
-
-                if (JSON.parse(jsonData)) {
-
-                    jsonData = JSON.parse(jsonData);
-                    state.data = jsonData;
-                    this.setState({...state, isFetching: false});
-                }
-            }
-        } catch (error) {
-            console.log("ERROR: ", error);
-        }
-    };
+    // dispatch = (data) => {
+    //     let state = this.state;
+    //     if (this.connectionTimer) {
+    //         clearTimeout(this.connectionTimer);
+    //     }
+    //     try {
+    //         let parsed = JSON.parse(data);
+    //
+    //         if (parsed && parsed.data && parsed.data.length) {
+    //             let jsonData = parsed.data;
+    //
+    //             if (JSON.parse(jsonData)) {
+    //
+    //                 jsonData = JSON.parse(jsonData);
+    //                 state.data = jsonData;
+    //                 this.setState({...state, isFetching: false});
+    //             }
+    //         }
+    //     } catch (error) {
+    //         console.log("ERROR: ", error);
+    //     }
+    // };
 
     getLocation = (lat, lng) => {
         let state = this.state;
+
         this.fetchURL("http://maps.googleapis.com/maps/api/geocode/json?latlng=" + lat + "," + lng + "&sensor=true")
             .then(response => response.json()) // parse response as JSON
             .then(data => {
@@ -136,14 +136,15 @@ class App extends Component {
 
                 }
                 state.clock = getClock();
-                this.setState({...state, isFetching: false}, () => {
-                    console.log("[APP STATE IS UPDATED]: ", this.state)
+                this.setState({data: {...state.data}, isFetching: false}, () => {
+                    //console.log("[APP STATE IS UPDATED]: ", this.state)
                 });
             })
             .catch(function (error) {
                 console.log(`Error: ${error.message}`);
             });
     };
+
     fetchURL = url => {
         return fetch(url)
             .then(response => {
@@ -155,34 +156,37 @@ class App extends Component {
                 }
             });
     };
-    // componentWillReceiveProps(nextProps, nextState) {
-    //    // console.log("nextProps, nextState", nextProps, nextState);
-    // }
-    //
-    // componentDidUpdate(prevProps, prevState, snapshot) {
-    //    // console.log("DID UPDATE", this.state);
-    // }
 
-    // componentDidCatch(error, info) {
-    //     // Display fallback UI
-    //     this.setState({hasError: true});
-    //     // You can also log the error to an error reporting service
-    //     console.log(error, info);
-    // }
+    fetchAjaxData = () => {
+        let self = this;
+        this.setState({isFetching: true});
+        fetch(URL)
+            .then(function(response) {
+                console.log(response.headers.get('Content-Type')); // application/json; charset=utf-8
+                console.log(response.status); // 200
+
+                return response.json();
+            })
+            .then(function(data) {
+                self.setState({data: data, isFetching: false});
+            })
+            .catch( console.log );
+    };
 
     componentWillMount() {
         this.startTimers();
     }
 
     componentDidMount() {
-        //cross-env PUBLIC_URL=http://xxxx.com
-        console.log(process.env.PUBLIC_URL)
-        this.init();
-        // this.timer = setTimeout(() => {
-        //     if (!this.state.data) {
-        //         this.fetchData()
-        //     }
-        // });
+        if (this.timer) {
+            clearInterval(this.timer)
+        }
+        this.timer = setInterval(() => {
+
+            this.fetchAjaxData();
+            this.init();
+
+        }, 30000);
     }
 
     componentWillUnmount() {
@@ -192,9 +196,11 @@ class App extends Component {
 
     init() {
         let self = this, state = this.state, counter = 10;
-        this.setState({
-            isFetching: true
-        }, () => this.getLocation(state.data.lat, state.data.lng));
+        if (state.data && state.data.lat && state.data.lng) {
+            this.setState({
+                isFetching: true
+            }, () => this.getLocation(state.data.lat, state.data.lng));
+        }
     }
 
     startTimers() {
@@ -230,7 +236,7 @@ class App extends Component {
     render() {
         const {classes} = this.props;
         let state = this.state, offline = this.state.offline;
-        //if (data) {
+
         return (
             <div>
                 <h4 className={classes.maxWidth + " " + (offline ? classes.grayBkg : classes.greenBkg)}>
@@ -239,22 +245,14 @@ class App extends Component {
                     }
                 </h4>
                 <div className={classes.clock}>
-                    AutoUpdate {this.state.counter > 0 && "in: " + this.state.counter + " sec"} <Switch
-                    checked={state.checked}
-                    onChange={this.handleSwitchChange(state.autoUpdate ? 'checkedB' : 'checkedA')}
-                    value={state.checked}
-                />
-                    Force update<div title="Force update" onClick={this.init}
-                                    className={"material-icons " + classes.refresh}>refresh</div>
                     <div className={classes.clock}>Last update: {this.state.clock}</div>
                 </div>
                 {this.state.isFetching && <LinearProgress variant="indeterminate" size={5}/>}
                 <FolderList isFetching={this.state.isFetching || false} data={state.data || {}}/>
             </div>
         );
-        //}
 
     }
 }
 
-export default withStyles(styles)(App);;
+export default withStyles(styles)(App);

@@ -67,11 +67,6 @@ class FolderList extends Component {
 
         return (
             <Paper className={classes.root}>
-                <div className={classes.rawData}>
-                    {
-                        JSON.stringify(this.props.data)
-                    }
-                </div>
                 {
                     this.props.data
                     &&
@@ -108,8 +103,8 @@ class FolderList extends Component {
                                 <MyLocation />
                             </Avatar>
                             <ListItemText
-                                primary={ !isFetching && street && allocation ? ( street + ", " + allocation ) : "No data"}
-                                secondary={ !isFetching && district && city && index ? ( district + ", " + city + ", " + index ) : "No data"}
+                                primary={ !isFetching && street && allocation ? ( street + ", " + allocation ) : ("lat: " + lat + ", " + "lng: " + lng)}
+                                // secondary={ !isFetching && district && city && index ? ( district + ", " + city + ", " + index ) : "No data"}
                             />
 
                         </ListItem>

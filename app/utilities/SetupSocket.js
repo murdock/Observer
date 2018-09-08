@@ -1,9 +1,9 @@
 const WS_HOST = "ws://localhost:44444";
-const types = {
-    ADD_USER: "ADD_USER",
-    ADD_MESSAGE: "ADD_MESSAGE",
-    USERS_LIST: "USERS_LIST",
-};
+// const types = {
+//     ADD_USER: "ADD_USER",
+//     ADD_MESSAGE: "ADD_MESSAGE",
+//     USERS_LIST: "USERS_LIST",
+// };
 const setupSocket = (dispatch) => {
 
     const socket = new WebSocket(WS_HOST);

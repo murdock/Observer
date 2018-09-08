@@ -62,7 +62,7 @@ const root = path.resolve(__dirname, '..'); // __dirname is a global variable av
 //static folders
 app.use('/public',express.static(path.join(root, 'public')));
 
-app.use('/data', express.static(PATH_DATA));
+//app.use('/data', express.static(PATH_DATA));
 
 // Handle route errors
 app.use((err, req, res, next) => {
@@ -70,7 +70,7 @@ app.use((err, req, res, next) => {
     res.status(err.status || 500);
     return next(err.message); // send error message text to front end
 });
-// Serve data from root
+
 app.get('*', (req, res, next) => {
     // console.log("[SERVER]: SEND FILE => ", req.url);
     res.sendFile('/index.html', {
@@ -79,12 +79,12 @@ app.get('*', (req, res, next) => {
 });
 
 // // catch 404 and forward to error handler
-// app.use((req, res, next) => {
-//     console.log("404 ? ", req.body);
-//     const err = new Error('Not Found');
-//     err.status = 404;
-//     return next(err);
-// });
+app.use((req, res, next) => {
+    console.log("404 ? ", req.body);
+    const err = new Error('Not Found');
+    err.status = 404;
+    return next(err);
+});
 
 wss.on('connection', (ws) => {
 
