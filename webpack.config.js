@@ -1,4 +1,6 @@
 const webpack = require('webpack');
+const dotenv = require('dotenv').config(),
+      env = process.env;
 const { resolve } = require('path');
 const hmr = [
     'babel-polyfill',
@@ -88,8 +90,10 @@ module.exports = {
         new webpack.DefinePlugin({
             'process.env': {
                 'NODE_ENV': JSON.stringify('development'),
-                'PUBLIC_URL': JSON.stringify('http://localhost:8086/public'),
-                'DEVICE_URL': JSON.stringify('http://observer.local/getData')
+                'PUBLIC_URL': JSON.stringify(env.HOST),
+                'DEVICE_URL': JSON.stringify(env.DEVICE_URL),
+                'GEOLOCATION': JSON.stringify(env.GEOLOCATION),
+                'API_KEY'   : JSON.stringify(env.API_KEY)
             }
         })
     ]

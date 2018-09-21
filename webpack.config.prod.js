@@ -1,5 +1,7 @@
 const path = require('path');
 const webpack = require('webpack');
+const dotenv = require('dotenv').config(),
+    env = process.env;
 const CleanWebpackPlugin = require('clean-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CompressionPlugin = require('compression-webpack-plugin');
@@ -31,8 +33,10 @@ module.exports = {
         new webpack.DefinePlugin({
             'process.env': {
                 'NODE_ENV': JSON.stringify('production'),
-                'PUBLIC_URL': JSON.stringify('http://localhost:8086/public'),
-                'DEVICE_URL': JSON.stringify('http://observer.local/getData')
+                'PUBLIC_URL': JSON.stringify(env.HOST),
+                'DEVICE_URL': JSON.stringify(env.DEVICE_URL),
+                'GEOLOCATION': JSON.stringify(env.GEOLOCATION),
+                'API_KEY'   : JSON.stringify(env.API_KEY)
             }
         }),
         new webpack.ProvidePlugin({
