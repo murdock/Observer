@@ -63,7 +63,7 @@ module.exports = {
                 exclude: [/node_modules/, /vendors/],
                 loader: require.resolve('babel-loader'),
                 options: {
-                    babelrc:true,
+                    babelrc: true,
                     cacheDirectory: false
                 }
             },
