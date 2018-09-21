@@ -88,7 +88,8 @@ module.exports = {
         new webpack.DefinePlugin({
             'process.env': {
                 'NODE_ENV': JSON.stringify('development'),
-                'PUBLIC_URL': JSON.stringify('http://localhost:8086/public')
+                'PUBLIC_URL': JSON.stringify('http://localhost:8086/public'),
+                'DEVICE_URL': JSON.stringify('http://observer.local/getData')
             }
         })
     ]

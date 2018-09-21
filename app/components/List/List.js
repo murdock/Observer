@@ -1,4 +1,4 @@
-import React, {Component, PureComponent} from 'react';
+import React, {PureComponent} from 'react';
 import PropTypes from 'prop-types';
 import {withStyles} from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
@@ -34,18 +34,12 @@ const styles = theme => ({
     }
 });
 
-class FolderList extends Component {
+class FolderList extends PureComponent {
     constructor(props) {
         super(props);
         this.state = {
             location: location || null
         };
-    }
-    componentDidMount(){
-        console.log("LIST DID MOUNT", this.props.data);
-    }
-    componentDidUpdate(){
-        console.log("LIST DID UPDATE", this.props.data);
     }
     render() {
         let self = this, {
@@ -104,7 +98,7 @@ class FolderList extends Component {
                             </Avatar>
                             <ListItemText
                                 primary={ !isFetching && street && allocation ? ( street + ", " + allocation ) : ("lat: " + lat + ", " + "lng: " + lng)}
-                                // secondary={ !isFetching && district && city && index ? ( district + ", " + city + ", " + index ) : "No data"}
+                                secondary={ !isFetching && district && city && index ? ( district + ", " + city + ", " + index ) : "No data"}
                             />
 
                         </ListItem>

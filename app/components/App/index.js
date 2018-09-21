@@ -53,7 +53,7 @@ const styles = theme => ({
         backgroundColor: "lightgray"
     }
 });
-const URL = "http://multisensor.local/getData";
+const URL = process.env.DEVICE_URL;
 class App extends Component {
     constructor(props) {
         super(props);
@@ -92,6 +92,7 @@ class App extends Component {
         this.startTimers = this.startTimers.bind(this);
     }
 
+    //WEBSOCKET
     // dispatch = (data) => {
     //     let state = this.state;
     //     if (this.connectionTimer) {

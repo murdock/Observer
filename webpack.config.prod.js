@@ -30,7 +30,9 @@ module.exports = {
         new webpack.optimize.AggressiveMergingPlugin(),
         new webpack.DefinePlugin({
             'process.env': {
-                'NODE_ENV': JSON.stringify('production')
+                'NODE_ENV': JSON.stringify('production'),
+                'PUBLIC_URL': JSON.stringify('http://localhost:8086/public'),
+                'DEVICE_URL': JSON.stringify('http://observer.local/getData')
             }
         }),
         new webpack.ProvidePlugin({
