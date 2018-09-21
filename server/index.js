@@ -6,7 +6,7 @@ const cors = require('cors');
 const webpack = require('webpack');
 const config = require('../webpack.config');
 const compiler = webpack(config);
-const serverPort = 8086;
+const serverPort = process.env.PORT;
 const app = express();
 
 if (process.env.NODE_ENV !== 'production') {
