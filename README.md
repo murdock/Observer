@@ -6,12 +6,12 @@
 ### Sample data for this app:
  
 #### {
-#### "lat":70.0988,
-#### "lng":20.6324,
-#### "satellites":7,
-#### "speedMPH":0.161109,
-#### "altitudeFeet":444.5538,
-#### "temperature":30,
-#### "humidity":35,
-#### "airQuality":237
+#### "lat": 70.0988,
+#### "lng": 20.6324,
+#### "satellites": 7,
+#### "speedMPH": 0.161109,
+#### "altitudeFeet": 444.5538,
+#### "temperature": 30,
+#### "humidity": 35,
+#### "airQuality": 237
 #### }
